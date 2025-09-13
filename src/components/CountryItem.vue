@@ -5,11 +5,11 @@ const { overview } = defineProps({
 </script>
 
 <template>
-  <div class="countryItemWrapper">
+  <router-link :to="`/country/${overview.cCode}`" class="countryItemWrapper">
     <img :src="overview.flag" :alt="overview.name" />
     <h2>{{ overview.name }}</h2>
     <p>Code: {{ overview.cCode }}</p>
-  </div>
+  </router-link>
 </template>
 
 <style scoped>
@@ -39,6 +39,7 @@ const { overview } = defineProps({
 }
 
 .countryItemWrapper h2 {
+  color: white;
   font-size: 18px;
   margin: 8px 0;
 }

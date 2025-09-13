@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import CountryItem from "./components/CountryItem.vue";
+import NavigateButton from "./components/NavigateButton.vue";
 
 const countries = ref([]);
 const filteredCountries = ref([]);
@@ -113,13 +114,7 @@ const onInput = (e) => {
       placeholder="Search by name, capital, language use, country code, .etc"
     />
     <div id="headerOptions">
-      <button>
-        <span class="btn-text">Countries</span> <span class="btn-icon">🌍</span>
-      </button>
-      <button>
-        <span class="btn-text">Global map</span>
-        <span class="btn-icon">🗺️</span>
-      </button>
+      <NavigateButton to="/map" title="Global map" icon="🗺️" />
     </div>
   </div>
 
@@ -165,25 +160,6 @@ const onInput = (e) => {
   justify-content: flex-end;
 }
 
-#headerOptions button {
-  margin-left: 8px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #555555;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#headerOptions button:hover {
-  background-color: #777777;
-}
-
-.btn-icon {
-  display: none;
-}
-
 /* Countries grid */
 #countriesWrapper {
   display: grid;
@@ -198,18 +174,13 @@ const onInput = (e) => {
     margin-top: 8px;
   }
 
-  #headerOptions {
-    width: 20%;
-    margin-top: 8px;
-  }
-
-  .btn-text,
   #headerWrapper h1 {
     display: none;
   }
 
-  .btn-icon {
-    display: inline;
+  #headerOptions {
+    width: 20%;
+    margin-top: 8px;
   }
 }
 </style>
