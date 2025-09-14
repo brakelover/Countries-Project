@@ -316,9 +316,17 @@ function scrollToSection(id) {
   #cDetailInfo {
     flex-direction: column;
   }
-  #cSidebar,
+  /* #cSidebar,
   #cInfos {
     flex: 1 1 100%;
+  } */
+  #cSidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  #cSidebar button {
+    width: fit-content;
   }
 }
 </style>

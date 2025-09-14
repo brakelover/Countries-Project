@@ -182,5 +182,9 @@ const onInput = (e) => {
     width: 20%;
     margin-top: 8px;
   }
+
+  #countriesWrapper {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 }
 </style>

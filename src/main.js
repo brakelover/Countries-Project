@@ -1,7 +1,7 @@
 import "./assets/main.css";
 
 import { createApp } from "vue";
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHashHistory, createRouter } from "vue-router";
 import "leaflet/dist/leaflet.css";
 import App from "./App.vue";
 import CountryList from "./CountryList.vue";
@@ -16,7 +16,7 @@ const routes = [
 ];
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 });
 

@@ -48,4 +48,14 @@ const { overview } = defineProps({
   font-size: 14px;
   color: #555;
 }
+
+@media screen and (max-width: 600px) {
+  .countryItemWrapper {
+    width: 180px;
+  }
+
+  .countryItemWrapper img {
+    width: 150px;
+  }
+}
 </style>
