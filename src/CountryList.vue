@@ -141,7 +141,7 @@ function scrollToSection(letter) {
 
 <template>
   <div id="headerWrapper">
-    <h1>Country Project</h1>
+    <h1>Countries Project</h1>
     <div id="headerFilterWrapper">
       <!-- Search by name, capital, country code, language, region, and flag description -->
       <input
