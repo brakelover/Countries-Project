@@ -9,7 +9,7 @@ defineProps({
 
 <template>
   <div class="group">
-    <h2 class="group-title">{{ letter }}</h2>
+    <h2 class="group-title" :id="`group-title-${letter}`">{{ letter }}</h2>
     <div class="group-list">
       <CountryItem
         v-for="country in countries"
@@ -33,11 +33,18 @@ defineProps({
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 8px;
+  border-bottom: 2px solid #695959;
 }
 
 .group-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, max-content));
   gap: 16px;
+}
+
+@media screen and (max-width: 600px) {
+  .group-list {
+    grid-template-columns: repeat(auto-fill, minmax(180px, max-content));
+  }
 }
 </style>

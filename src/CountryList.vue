@@ -1,16 +1,34 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import CountryItem from "./components/CountryItem.vue";
+import { onMounted, ref, watch, computed } from "vue";
+import GroupByAlphabet from "./components/GroupByAlphabet.vue";
 import NavigateButton from "./components/NavigateButton.vue";
 
-const countries = ref([]);
-const filteredCountries = ref([]);
 const searchInput = ref("");
 const totalFound = ref(0);
 
-const alphabetArr = Array.from({ length: 26 }, (_, i) =>
-  String.fromCharCode(65 + i)
-);
+const countries = ref([]);
+const filteredCountries = ref([]);
+const letterGroups = ref({});
+
+const groupByLetter = () => {
+  letterGroups.value = {};
+  // Group by letter
+  let tempGroup = {};
+  filteredCountries.value.map((country) => {
+    const firstChar = country.name.common.charAt(0).toUpperCase();
+    if (!tempGroup[firstChar]) tempGroup[firstChar] = []; // create an array to push if haven't exist
+    tempGroup[firstChar].push(country);
+  });
+  // Sort follow by alphabet
+  const sortedGroups = {};
+  Object.keys(tempGroup)
+    .sort()
+    .forEach((key) => {
+      sortedGroups[key] = tempGroup[key];
+    });
+
+  letterGroups.value = sortedGroups;
+};
 
 // Get data
 onMounted(async () => {
@@ -23,6 +41,7 @@ onMounted(async () => {
     data.sort((a, b) => a.name.common.localeCompare(b.name.common));
     countries.value = data;
     filteredCountries.value = data;
+    groupByLetter();
   } catch (e) {
     console.log(e);
   }
@@ -94,25 +113,56 @@ watch(searchInput, (newVariable) => {
     );
   });
 
+  groupByLetter();
+
   // Total found count
   totalFound.value = filteredCountries.value.length;
 });
 
+const groupKeys = computed(() => Object.keys(letterGroups.value));
+
 const onInput = (e) => {
   searchInput.value = e.target.value; // Update right after typing
 };
+
+// Scroll to section
+function scrollToSection(letter) {
+  const el = document.getElementById(`group-title-${letter}`);
+  if (!el) return;
+
+  const top = el.getBoundingClientRect().top + window.scrollY; // absolute position
+  const offset = window.innerHeight * 0.33; // scroll to about 2/3 screen
+  window.scrollTo({
+    top: top - offset,
+    behavior: "smooth",
+  });
+}
 </script>
 
 <template>
   <div id="headerWrapper">
     <h1>Country Project</h1>
-    <!-- Search by name, capital, country code, language, region, and flag description -->
-    <input
-      v-model="searchInput"
-      @input="onInput"
-      type="text"
-      placeholder="Search by name, capital, language use, country code, .etc"
-    />
+    <div id="headerFilterWrapper">
+      <!-- Search by name, capital, country code, language, region, and flag description -->
+      <input
+        v-model="searchInput"
+        @input="onInput"
+        type="text"
+        placeholder="Search by name, capital, language use, country code, .etc"
+      />
+      <div id="letterHeaderWrapper">
+        <p>Go to:</p>
+        <div id="letterHeader">
+          <button
+            v-for="letter in groupKeys"
+            :key="letter"
+            @click="scrollToSection(letter)"
+          >
+            {{ letter }}
+          </button>
+        </div>
+      </div>
+    </div>
     <div id="headerOptions">
       <NavigateButton to="/map" title="Global map" icon="🗺️" />
     </div>
@@ -120,14 +170,11 @@ const onInput = (e) => {
 
   <div id="countriesWrapper">
     <p v-if="filteredCountries.length === 0">No country found</p>
-    <CountryItem
-      v-for="country in filteredCountries"
-      :overview="{
-        name: country?.name?.common,
-        flag: country?.flags?.png,
-        cCode: country?.cca3,
-      }"
-      :key="country.cca3"
+    <GroupByAlphabet
+      v-for="(countries, letter) in letterGroups"
+      :key="letter"
+      :letter="letter"
+      :countries="countries"
     />
   </div>
 </template>
@@ -150,8 +197,25 @@ const onInput = (e) => {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  width: 35%;
+  width: 95%;
   background-color: #f9f9f9;
+}
+
+#headerFilterWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+#letterHeaderWrapper {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 90%;
+}
+
+#letterHeaderWrapper p {
+  margin-right: 10px;
 }
 
 #headerOptions {
@@ -163,14 +227,14 @@ const onInput = (e) => {
 /* Countries grid */
 #countriesWrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  flex-direction: column;
+  gap: 40px;
   padding: 16px;
 }
 
 @media screen and (max-width: 600px) {
   #headerWrapper input {
-    width: 70%;
+    width: 100%;
     margin-top: 8px;
   }
 
